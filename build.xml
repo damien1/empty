@@ -133,7 +133,14 @@
  
 </target>
 
+   <!-- YOU NEED WP-CLI for this-->
+    <target name="wp.status">
+        <echo message="Checking WP Status..." />
 
+        <exec executable="wp" dir=".">
+            <arg line="plugin status ${plugin.name}" />
+        </exec>
+    </target>
 
 
 </project>
