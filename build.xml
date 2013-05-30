@@ -17,8 +17,6 @@
     <fail unless="plugin.name"/>
 
 
-
-  <!-- MAKE IT THE SAME BELOW -->
   <!-- MAKE IT THE SAME BELOW -->
 
 <!-- DEV Deletes the existing directory-->
@@ -42,6 +40,7 @@
   </target>
 
 
+
  <!-- WINDOWS WAMP Deletes the PLUGIN & CREATES the directory-->
   <target name="win.clean">
     <delete dir="${win.plugin.dir}" />
@@ -49,10 +48,25 @@
   </target>
 
 
+	<target name="lint" description="Perform syntax check of sourcecode files">
+		<apply executable="php" failonerror="true">
+			<arg value="-l" />
+
+			<fileset dir="${basedir}/src">
+				<include name="**/*.php" />
+				<modified />
+			</fileset>
+
+			<fileset dir="${basedir}/tests">
+				<include name="**/*.php" />
+				<modified />
+			</fileset>
+		</apply>
+	</target>
 
 
 
-  <target name="build.clean">
+  <target name="build.clean" description="Cleanup build artifacts">
     <delete dir="${build.dir}" />
     <delete dir="${dist.dir}" />
   </target>
@@ -63,16 +77,15 @@
 
 
 
+  <!-- Creates the  build & moves the files directory -->
 
-
-
-
-  <!-- Creates the  build & moves the files directory-->
-  <target name="makedir" depends="build.clean">
+  <target name="makedir" depends="build.clean" description="Prepare for build">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/${plugin.name}" />
     <mkdir dir="${dist.dir}" />
   </target>
+
+
 
 <target name="make" depends="makedir">
   <copy todir="${build.dir}/${plugin.name}">
@@ -98,7 +111,8 @@
 
 </target>
 
-<target name="readme">
+
+<target name="readme" description="Generates the WordPress readme.txt from the MD file">
     <echo message="Generating update file ..." level="info"/>
     <copy todir="${build.dir}/${plugin.name}">
         <fileset dir="."/>
@@ -117,7 +131,7 @@
   
 
 
-<target name="mac_zip" depends="make">
+<target name="mac_zip" depends="make" description="MacOS compressed artifacts and saves to your Dropbox">
   <zip destfile="${dist.dir}/${plugin.name}.zip"
        basedir="${plugin.name}"
   />
@@ -126,7 +140,7 @@
   />  
 </target>
 
-<target name="win_zip" depends="win.clean,make">
+<target name="win_zip" depends="win.clean,make" description="Windows build artifacts">
   <zip destfile="${dist.dir}/${plugin.name}.zip"
        basedir="${plugin.name}"
   />
